@@ -12,7 +12,7 @@ avgSeasonsElm.innerHTML = `${getAvgSeasons(dataSeries)}`
 function createCard(serie : Serie){
   cardSeries.innerHTML = `<div class="card" style="width: 18rem;">
       <div class="card-body">
-          <img src="${serie.image}" class="card-img-top">
+          <img src="${serie.image}" alt = ${serie.name} class="card-img-top">
           <h3 class="card-title">${serie.name}</h3>
           <p class="card-text">${serie.description}</p>
           <a href="${serie.link}">${serie.link}</a>
@@ -24,14 +24,26 @@ function renderSeriesInTable(series: Serie[]): void {
     console.log('Desplegando series');
     series.forEach(s => {
         let trElement = document.createElement("tr");
-        trElement.onclick = () => createCard(s);
-        trElement.innerHTML = `<td>${s.id}</td> 
-                          <td><button type="button" class="btn btn-link" data-toggle="modal" data-target="#cardModal">${s.name}</button></td>
+        let nameButton = document.createElement("button");
+        nameButton.type = "button";
+        nameButton.className = "btn btn-link"; 
+        nameButton.style.border = "none"; 
+        nameButton.style.background = "none"; 
+        nameButton.style.cursor = "pointer";
+        nameButton.textContent = s.name;
+        nameButton.onclick = () => createCard(s);
+
+        trElement.innerHTML = `<td>${s.id}</td>
+                           <td></td>
                            <td>${s.channel}</td>
                            <td>${s.seasons}</td>`;
+        const tdElement = trElement.querySelector('td:nth-child(2)');
+          if (tdElement) { tdElement.appendChild(nameButton);} 
+          else { console.error('Could not find the second td element in the row.'); }
         seriesTbody.appendChild(trElement);
   });
 }
+
 
 function getAvgSeasons(series: Serie[]): number {
   let totalSeasons: number = 0;
